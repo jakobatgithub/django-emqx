@@ -1,14 +1,13 @@
 ## django_emqx/conf.py
 
-import os
-
 from django.conf import settings
 
 
 DEFAULTS = {
     'EMQX_BROKER': "emqx_broker",
     'EMQX_PORT': 8883,
-    'EMQX_WEBHOOK_SECRET': os.environ.get("EMQX_WEBHOOK_SECRET"),
+    'EMQX_WEBHOOK_SECRET': settings.SECRET_KEY,
+    'EMQX_NODE_COOKIE': settings.SECRET_KEY,
     'EMQX_MAX_RETRIES': 10,
     'EMQX_RETRY_DELAY': 3,
     'EMQX_TLS_ENABLED': True,
