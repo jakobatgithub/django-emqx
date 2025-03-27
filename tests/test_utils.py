@@ -9,7 +9,6 @@ from django_emqx.utils import (
     generate_django_secret_key,
     generate_signing_key,
 )
-from rest_framework_simplejwt.tokens import AccessToken
 
 
 class TestUtils(unittest.TestCase):
@@ -25,7 +24,7 @@ class TestUtils(unittest.TestCase):
 
         mock_token.__setitem__.side_effect = setitem_side_effect
 
-        token = generate_backend_mqtt_token()
+        generate_backend_mqtt_token()
         self.assertTrue(MockAccessToken.called)
         self.assertEqual(mock_token.__dict__["username"], "backend")
         self.assertIn("acl", mock_token.__dict__)
@@ -42,7 +41,7 @@ class TestUtils(unittest.TestCase):
 
         mock_token.__setitem__.side_effect = setitem_side_effect
 
-        token = generate_mqtt_token(mock_user)
+        generate_mqtt_token(mock_user)
         self.assertTrue(mock_for_user.called)
         self.assertEqual(mock_token.__dict__["username"], "123")
         self.assertIn("acl", mock_token.__dict__)
@@ -88,7 +87,3 @@ class TestUtils(unittest.TestCase):
         signing_key = generate_signing_key()
         self.assertEqual(len(signing_key), 64)  # 32 bytes in hex = 64 characters
         self.assertTrue(all(c in "0123456789abcdef" for c in signing_key))
-
-
-if __name__ == "__main__":
-    unittest.main()

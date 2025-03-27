@@ -12,7 +12,7 @@ class TestMQTTClient(unittest.TestCase):
         mock_client_instance = MagicMock()
         mock_mqtt_client.return_value = mock_client_instance
 
-        client = MQTTClient(broker="test_broker", port=1883, keepalive=60)
+        MQTTClient(broker="test_broker", port=1883, keepalive=60)
 
         mock_generate_token.assert_called_once()
         mock_mqtt_client.assert_called_once()
