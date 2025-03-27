@@ -1,0 +1,65 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "django-emqx"
+version = "0.1"
+description = "A Django app for sending notifications via the EMQX MQTT broker to mobile devices."
+readme = "README.md"
+requires-python = ">=3.8"
+license = {text = "MIT"}
+authors = [
+    { name = "Jakob", email = "jakob@physik.tu-berlin.de" },
+]
+maintainers = [
+    { name = "Jakob", email = "jakob@physik.tu-berlin.de" },
+]
+keywords = ["django", "mqtt", "emq", "notifications"]
+classifiers = [
+    "Framework :: Django",
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+]
+dependencies = [
+    "Django>=4.2.16,<6.0",
+    "djangorestframework>=3.15.1,<4.0",
+    "djangorestframework_simplejwt>=5.5.0",
+    "paho_mqtt>=2.1.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/jakobatgithub/django-emqx"
+
+[project.optional-dependencies]
+fcm = [
+    "fcm_django>=2.2.1",
+    "firebase_admin>=6.2,<7"
+]
+
+dev = [
+    "ipython",
+    "ipykernel",
+    "jupyterlab",
+    "notebook",
+    "django-debug-toolbar",
+    "django-extensions",
+    "black",
+    "ruff",
+    "google-cloud-firestore",
+    "google-cloud-storage"
+]
+
+test = [
+    "pytest",
+    "pytest-django",
+    "pytest-cov",
+    "pytest-mock",
+    "coverage"
+]
+
+[tool.setuptools]
+include-package-data = true
+
+[tool.setuptools.packages.find]
+where = ["."]
