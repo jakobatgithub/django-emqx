@@ -10,7 +10,7 @@ from rest_framework import status
 from unittest.mock import patch, MagicMock
 
 from django_emqx import utils
-from django_emqx.models import EMQXDevice, Message, UserNotification
+from django_emqx.models import EMQXDevice, Message, Notification
 from django_emqx.signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
 from django.dispatch import Signal
 from django.test import override_settings
@@ -25,7 +25,7 @@ class NotificationViewSetTests(TestCase):
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.client.force_authenticate(user=self.user)
         self.message = Message.objects.create(title="Test Title", body="Test Body", created_by=self.user)
-        self.notification = UserNotification.objects.create(message=self.message, recipient=self.user)
+        self.notification = Notification.objects.create(message=self.message, recipient=self.user)
 
     @patch("django_emqx.mixins.send_mqtt_message")
     @patch("django_emqx.views.get_mqtt_client")

@@ -4,6 +4,7 @@ ROOT_URLCONF = 'tests.urls'
 
 SECRET_KEY = 'dummy'
 INSTALLED_APPS = [
+    'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions', 

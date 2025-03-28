@@ -12,8 +12,8 @@ from django.contrib.auth import get_user_model
 
 from . import get_mqtt_client
 from .conf import emqx_settings
-from .models import EMQXDevice, Message, UserNotification
-from .serializers import EMQXDeviceSerializer, UserNotificationSerializer
+from .models import EMQXDevice, Message, Notification
+from .serializers import EMQXDeviceSerializer, NotificationSerializer
 from .mixins import NotificationSenderMixin, ClientEventMixin
 from .utils import generate_mqtt_token
 from .signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
@@ -46,8 +46,8 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
         Returns:
             Response: A JSON response containing the list of notifications.
         """
-        notifications = UserNotification.objects.filter(recipient=request.user).select_related("message")
-        serializer = UserNotificationSerializer(notifications, many=True)
+        notifications = Notification.objects.filter(recipient=request.user).select_related("message")
+        serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
 
     def create(self, request):

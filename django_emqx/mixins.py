@@ -6,12 +6,12 @@ from django.contrib.auth import get_user_model
 # Check if Firebase is available
 try:
     from fcm_django.models import FCMDevice
-    from firebase_admin.messaging import Notification, Message as FCMMessage
+    from firebase_admin.messaging import Notification as FCMNotification, Message as FCMMessage
     firebase_installed = True
 except ImportError:
     firebase_installed = False
 
-from .models import UserNotification, EMQXDevice
+from .models import Notification, EMQXDevice
 from .utils import send_mqtt_message
 
 
@@ -32,7 +32,7 @@ class NotificationSenderMixin:
             body (str): The body of the notification.
         """
         for recipient in recipients:
-            UserNotification.objects.create(message=message, recipient=recipient)
+            Notification.objects.create(message=message, recipient=recipient)
 
             # Send a notification via MQTT
             send_mqtt_message(mqtt_client, recipient, msg_id=message.id, title=title, body=body)
@@ -40,7 +40,7 @@ class NotificationSenderMixin:
             # Send a notification to Firebase devices if Firebase is installed
             if firebase_installed:
                 devices = FCMDevice.objects.filter(user=recipient)
-                devices.send_message(FCMMessage(notification=Notification(title=title, body=body)))
+                devices.send_message(FCMMessage(notification=FCMNotification(title=title, body=body)))
 
 
 class ClientEventMixin:
