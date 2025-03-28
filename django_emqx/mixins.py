@@ -71,7 +71,6 @@ class ClientEventMixin:
                 "ip_address": ip_address,
             },
         )
-        # print(f"User {user} connected on device {device_id} (IP: {ip_address})")
         return created
 
     def handle_client_disconnected(self, user_id, device_id):
@@ -90,7 +89,4 @@ class ClientEventMixin:
             active=False,
             last_status="offline",
         )
-
-        # if updated:
-        #     print(f"User {user} disconnected from device {device_id}")
         return updated
