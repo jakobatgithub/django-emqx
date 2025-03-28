@@ -10,7 +10,6 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 
-from . import get_mqtt_client
 from .conf import emqx_settings
 from .models import EMQXDevice, Message, Notification
 from .serializers import EMQXDeviceSerializer, NotificationSerializer
