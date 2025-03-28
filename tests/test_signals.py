@@ -4,8 +4,6 @@ from django_emqx.signals import (
     new_emqx_device_connected,
     emqx_device_disconnected,
 )
-from django.dispatch import Signal
-
 class TestSignals(TestCase):
     def test_emqx_device_connected_signal(self):
         signal_called = False
