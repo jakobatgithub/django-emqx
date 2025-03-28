@@ -12,6 +12,8 @@ try:
 except ImportError:
     firebase_installed = False
 
+from . import get_mqtt_client
+
 
 def generate_backend_mqtt_token():
     """
@@ -73,7 +75,7 @@ def generate_mqtt_token(user):
     ]
     return str(token)
 
-def send_mqtt_message(mqtt_client, recipient, msg_id, title=None, body=None, data=None):
+def send_mqtt_message(recipient, msg_id, title=None, body=None, data=None):
     """
     Publish a message via MQTT to a specific user's topic.
 
@@ -92,6 +94,7 @@ def send_mqtt_message(mqtt_client, recipient, msg_id, title=None, body=None, dat
         "data": data if data is not None else ""
     })
     user_topic = f"user/{recipient.id}/"
+    mqtt_client = get_mqtt_client()
     mqtt_client.publish(user_topic, payload)
     
     print(f"✅ MQTT notification sent: {payload}")

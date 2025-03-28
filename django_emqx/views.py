@@ -29,13 +29,6 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
 
     permission_classes = [IsAuthenticated]
 
-    def __init__(self, *args, **kwargs):
-        """
-        Initialize the NotificationViewSet with an MQTT client instance.
-        """
-        super().__init__(*args, **kwargs)
-        self.mqtt_client = get_mqtt_client()
-
     def list(self, request):
         """
         Retrieve a list of notifications for the authenticated user.
@@ -76,7 +69,7 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
         else:
             recipients = User.objects.all()
 
-        self.send_all_notifications(message, recipients, self.mqtt_client)
+        self.send_all_notifications(message, recipients)
         return JsonResponse({"message": "Notifications sent successfully"})
 
 

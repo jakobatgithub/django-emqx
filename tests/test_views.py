@@ -28,9 +28,7 @@ class NotificationViewSetTests(TestCase):
         self.notification = Notification.objects.create(message=self.message, recipient=self.user)
 
     @patch("django_emqx.mixins.send_mqtt_message")
-    @patch("django_emqx.views.get_mqtt_client")
-    def test_create_notification(self, mock_send_mqtt_message, mock_get_client):
-        mock_get_client.return_value = MagicMock()
+    def test_create_notification(self, mock_send_mqtt_message):
         if utils.firebase_installed:
             with patch("django_emqx.mixins.FCMDevice.objects.filter") as mock_fcm_filter:
                 mock_devices = MagicMock()
