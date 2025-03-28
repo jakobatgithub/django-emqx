@@ -69,7 +69,7 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
         if not title and not body and not data:
             return Response({"error": "Title or body or data are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        message = Message.objects.create(title=title, body=body, data=data)
+        message = Message.objects.create(title=title, body=body, data=data, created_by=request.user)
 
         if user_ids:
             recipients = User.objects.filter(id__in=user_ids)
