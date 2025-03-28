@@ -52,9 +52,7 @@ class NotificationViewSetTests(TestCase):
 
         mock_send_mqtt_message.assert_called_once()
 
-    @patch("django_emqx.views.get_mqtt_client")
-    def test_create_notification_missing_fields(self, mock_get_client):
-        mock_get_client.return_value = MagicMock()
+    def test_create_notification_missing_fields(self):
         url = reverse("notifications-list")
         data = {}
         response = self.client.post(url, data, format="json")
@@ -62,9 +60,7 @@ class NotificationViewSetTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
         self.assertEqual(response.json(), {"error": "Title or body or data are required"})
 
-    @patch("django_emqx.views.get_mqtt_client")
-    def test_list_notifications(self, mock_get_client):
-        mock_get_client.return_value = MagicMock()
+    def test_list_notifications(self):
         url = reverse("notifications-list")
         response = self.client.get(url, format="json")
 

@@ -53,8 +53,8 @@ class TestUtils(unittest.TestCase):
         mock_get_mqtt_client.return_value = mqtt_client
         mock_recipient = MagicMock(id=123)
         mock_json_dumps.return_value = '{"msg_id": "1", "title": "Test", "body": "Message", "data": "Data"}'
-
-        send_mqtt_message(mock_recipient, "1", "Test", "Message", "Data")
+        message = MagicMock()
+        send_mqtt_message(mock_recipient, message)
         mqtt_client.publish.assert_called_with("user/123/", '{"msg_id": "1", "title": "Test", "body": "Message", "data": "Data"}')
 
     @patch("django_emqx.utils.messaging.send")

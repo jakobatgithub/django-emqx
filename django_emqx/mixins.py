@@ -35,7 +35,7 @@ class NotificationSenderMixin:
             Notification.objects.create(message=message, recipient=recipient)
 
             # Send a notification via MQTT
-            send_mqtt_message(recipient, msg_id=message.id, title=message.title, body=message.body, data=message.data)
+            send_mqtt_message(recipient, message)
 
             # Send a notification to Firebase devices if Firebase is installed
             if firebase_installed:

@@ -75,7 +75,7 @@ def generate_mqtt_token(user):
     ]
     return str(token)
 
-def send_mqtt_message(recipient, msg_id, title=None, body=None, data=None):
+def send_mqtt_message(recipient, message):
     """
     Publish a message via MQTT to a specific user's topic.
 
@@ -87,6 +87,10 @@ def send_mqtt_message(recipient, msg_id, title=None, body=None, data=None):
         body (str): The body content of the message (str or None).
         data (dict or None): Optional additional data.
     """
+    msg_id = message.id
+    title = message.title
+    body = message.body
+    data = message.data
     payload = json.dumps({
         "msg_id": msg_id,
         "title": title if title is not None else "",
