@@ -139,7 +139,7 @@ class BaseMessage(models.Model):
             return f"Message to topic '{self.topic}'"
         elif self.body:
             return self.body[:50] + ('...' if len(self.body) > 50 else '')
-        return f"Untitled message (ID: {self.id})"        
+        return f"Untitled message (ID: {self.id})"
 
 
 class BaseNotification(models.Model):
