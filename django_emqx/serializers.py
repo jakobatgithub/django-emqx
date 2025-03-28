@@ -23,4 +23,4 @@ class UserNotificationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = UserNotification
-        fields = ['id', 'title', 'body', 'delivered_at']  # include other relevant fields
+        fields = ['id', 'recipient', 'title', 'body', 'delivered_at']
