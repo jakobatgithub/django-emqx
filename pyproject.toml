@@ -39,9 +39,6 @@ fcm = [
 
 dev = [
     "ipython",
-    "ipykernel",
-    "jupyterlab",
-    "notebook",
     "django-debug-toolbar",
     "django-extensions",
     "black",
