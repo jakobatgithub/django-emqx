@@ -61,7 +61,7 @@ class ClientEventMixin:
         if not user:
             return
 
-        EMQXDevice.objects.update_or_create(
+        device, created = EMQXDevice.objects.update_or_create(
             client_id=device_id,
             defaults={
                 "user": user,
@@ -71,7 +71,8 @@ class ClientEventMixin:
                 "ip_address": ip_address,
             },
         )
-        print(f"User {user} connected on device {device_id} (IP: {ip_address})")
+        # print(f"User {user} connected on device {device_id} (IP: {ip_address})")
+        return created
 
     def handle_client_disconnected(self, user_id, device_id):
         """
@@ -90,5 +91,6 @@ class ClientEventMixin:
             last_status="offline",
         )
 
-        if updated:
-            print(f"User {user} disconnected from device {device_id}")
+        # if updated:
+        #     print(f"User {user} disconnected from device {device_id}")
+        return updated

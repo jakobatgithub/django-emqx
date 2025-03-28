@@ -16,6 +16,8 @@ from .models import EMQXDevice, Message, UserNotification
 from .serializers import EMQXDeviceSerializer, UserNotificationSerializer
 from .mixins import NotificationSenderMixin, ClientEventMixin
 from .utils import generate_mqtt_token
+from .signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
+
 
 User = get_user_model()
 
@@ -154,20 +156,27 @@ class EMQXDeviceViewSet(ViewSet, ClientEventMixin):
             data = json.loads(decoded_str)
 
             event = data.get("event")
-            client_id = data.get("clientid")
+            device_id = data.get("clientid")
             user_id = data.get("user_id")
             ip_address = data.get("ip_address", None)
 
-            if not client_id or not user_id:
+            if not device_id or not user_id:
                 return Response({"error": "Invalid data"}, status=400)
 
             if user_id == "backend":
                 return Response({"status": "success"})
 
             if event == "client.connected":
-                self.handle_client_connected(user_id, client_id, ip_address)
+                created = self.handle_client_connected(user_id, device_id, ip_address)
+                if created:
+                    new_emqx_device_connected.send(sender=EMQXDevice, user_id=user_id, device_id=device_id, ip_address=ip_address)    
+                else:
+                    emqx_device_connected.send(sender=EMQXDevice, user_id=user_id, device_id=device_id, ip_address=ip_address)
             elif event == "client.disconnected":
-                self.handle_client_disconnected(user_id, client_id)
+                updated = self.handle_client_disconnected(user_id, device_id)
+                if updated:
+                    emqx_device_disconnected.send(sender=EMQXDevice, user_id=user_id, device_id=device_id, ip_address=ip_address)
+    
             else:
                 return Response({"error": "Unknown event"}, status=400)
 

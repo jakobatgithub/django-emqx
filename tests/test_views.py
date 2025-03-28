@@ -11,6 +11,10 @@ from unittest.mock import patch, MagicMock
 
 from django_emqx import utils
 from django_emqx.models import EMQXDevice, Message, UserNotification
+from django_emqx.signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
+from django.dispatch import Signal
+from django.test import override_settings
+from contextlib import contextmanager
 
 User = get_user_model()
 
@@ -191,3 +195,81 @@ class EMQXDeviceViewSetTests(TestCase):
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), {"status": "success"})
+
+    @patch("django_emqx.views.EMQXDeviceViewSet.handle_client_connected")
+    def test_signal_emqx_device_connected(self, mock_handle_client_connected):
+        mock_handle_client_connected.side_effect = lambda user_id, device_id, ip_address: emqx_device_connected.send(
+            sender=EMQXDevice, user_id=user_id, device_id=device_id, ip_address=ip_address
+        )
+        url = reverse("devices-list")
+        data = {
+            "event": "client.connected",
+            "clientid": "test_client_id",
+            "user_id": str(self.user.id),
+            "ip_address": "127.0.0.1",
+        }
+        headers = {"HTTP_X-Webhook-Token": "your_webhook_secret"}
+        with override_settings(EMQX_WEBHOOK_SECRET="your_webhook_secret"):
+            with self.assertSignalSent(emqx_device_connected) as handler:
+                response = self.client.post(url, data, format="json", **headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"status": "success"})
+        self.assertEqual(handler.signal_args[1]["user_id"], str(self.user.id))  # Verify signal arguments
+        self.assertEqual(handler.signal_args[1]["device_id"], "test_client_id")
+
+    @patch("django_emqx.views.EMQXDeviceViewSet.handle_client_connected", return_value=True)
+    def test_signal_new_emqx_device_connected(self, mock_handle_client_connected):
+        url = reverse("devices-list")
+        data = {
+            "event": "client.connected",
+            "clientid": "new_test_client_id",
+            "user_id": str(self.user.id),
+            "ip_address": "127.0.0.1",
+        }
+        headers = {"HTTP_X-Webhook-Token": "your_webhook_secret"}
+        with override_settings(EMQX_WEBHOOK_SECRET="your_webhook_secret"):
+            with self.assertSignalSent(new_emqx_device_connected):
+                response = self.client.post(url, data, format="json", **headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"status": "success"})
+
+    @patch("django_emqx.views.EMQXDeviceViewSet.handle_client_disconnected")
+    def test_signal_emqx_device_disconnected(self, mock_handle_client_disconnected):
+        url = reverse("devices-list")
+        data = {
+            "event": "client.disconnected",
+            "clientid": "test_client_id",
+            "user_id": str(self.user.id),
+        }
+        headers = {"HTTP_X-Webhook-Token": "your_webhook_secret"}
+        with override_settings(EMQX_WEBHOOK_SECRET="your_webhook_secret"):
+            with self.assertSignalSent(emqx_device_disconnected):
+                response = self.client.post(url, data, format="json", **headers)
+
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.json(), {"status": "success"})
+
+    @contextmanager
+    def assertSignalSent(self, signal: Signal):
+        """
+        Helper method to assert that a signal is sent during a test.
+        """
+        class SignalHandler:
+            def __init__(self):
+                self.called = False
+                self.signal_args = None
+
+            def handler(self, *args, **kwargs):
+                self.called = True
+                self.signal_args = (args, kwargs)
+
+        handler = SignalHandler()
+        signal.connect(handler.handler, weak=False)  # Ensure strong reference to avoid disconnection
+        try:
+            yield handler
+        finally:
+            signal.disconnect(handler.handler)
+        self.assertTrue(handler.called, f"Signal {signal} was not sent.")
+        print(f"Signal {signal} sent with args: {handler.signal_args}")  # Debugging output
