@@ -21,6 +21,19 @@ This project incorporates several security and efficiency measures to ensure sea
 - **Integration with Firebase Cloud Messaging (FCM):**
     Notifications are also sent via Firebase in case it is installed.
 
+## Installation
+
+Basic install:
+
+```bash
+pip install django-emqx
+```
+If you want FCM (Firebase Cloud Messaging) support:
+
+```bash
+pip install django-emqx[fcm]
+```
+
 ## Project Structure
 
   - **django_emqx/**: Django app for handling notifications.
