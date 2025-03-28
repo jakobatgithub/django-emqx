@@ -4,7 +4,18 @@ from django.core.management.base import BaseCommand
 from django.conf import settings
 from django_emqx.conf import emqx_settings
 
-from jinja2 import Environment, FileSystemLoader
+from importlib import resources
+from jinja2 import Environment, BaseLoader
+
+
+def load_template_from_package():
+    # Path: django_emqx/templates/emqx/emqx.conf.j2
+    with resources.files('django_emqx.templates.emqx').joinpath('emqx.conf.j2').open('r') as f:
+        template_str = f.read()
+
+    env = Environment(loader=BaseLoader())
+    template = env.from_string(template_str)
+    return template
 
 
 class Command(BaseCommand):
@@ -21,14 +32,7 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         output_path = options['output']
 
-        # Template location within the app
-        template_dir = os.path.join(os.path.dirname(__file__), '../../../templates/emqx')
-        template_dir = os.path.abspath(template_dir)
-
-        # Render the template
-        env = Environment(loader=FileSystemLoader(template_dir))
-        template = env.get_template("emqx.conf.j2")
-
+        template = load_template_from_package()
         config = template.render({
             'EMQX_NODE_COOKIE': emqx_settings.EMQX_NODE_COOKIE,
             'EMQX_WEBHOOK_SECRET': emqx_settings.EMQX_WEBHOOK_SECRET,
