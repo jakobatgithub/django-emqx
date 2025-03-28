@@ -3,6 +3,7 @@ import os
 from django.core.management.base import BaseCommand
 from django.conf import settings
 from django_emqx.conf import emqx_settings
+from django.urls import reverse
 
 from importlib import resources
 from jinja2 import Environment, BaseLoader
@@ -33,10 +34,17 @@ class Command(BaseCommand):
         output_path = options['output']
 
         template = load_template_from_package()
+        if hasattr(settings, 'BASE_URL') and settings.BASE_URL:
+            DEVICE_WEBHOOK_URL = f"{settings.BASE_URL}{reverse('devices-list')}"
+        else:
+            DEVICE_WEBHOOK_URL = f"http://localhost:8000{reverse('devices-list')}"
+    
         config = template.render({
             'EMQX_NODE_COOKIE': emqx_settings.EMQX_NODE_COOKIE,
             'EMQX_WEBHOOK_SECRET': emqx_settings.EMQX_WEBHOOK_SECRET,
             'SIMPLE_JWT_SIGNING_KEY': settings.SIMPLE_JWT['SIGNING_KEY'],
+            'EMQX_TLS_CA_CERTS': emqx_settings.EMQX_TLS_CA_CERTS,
+            'DEVICE_WEBHOOK_URL': DEVICE_WEBHOOK_URL,
         })
 
         # Ensure output directory exists

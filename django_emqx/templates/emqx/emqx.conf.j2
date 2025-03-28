@@ -47,7 +47,7 @@
           "X-Webhook-Token": {{ EMQX_WEBHOOK_SECRET }},
           "content-type": "application/json"
         },
-        "url": "http://192.168.178.33:8000/emqx/devices/"
+        "url": {{ DEVICE_WEBHOOK_URL }}
       },
       "client_disconnected_WH_D": {
         "enable": true,
@@ -55,7 +55,7 @@
           "X-Webhook-Token": {{ EMQX_WEBHOOK_SECRET }},
           "content-type": "application/json"
         },
-        "url": "http://192.168.178.33:8000/emqx/devices/"
+        "url": {{ DEVICE_WEBHOOK_URL }}
       }
     }
   },
@@ -82,8 +82,8 @@
         "proxy_protocol": false,
         "proxy_protocol_timeout": "3s",
         "ssl_options": {
-          "cacertfile": "/etc/emqx/certs/ca.crt",
-          "certfile": "/etc/emqx/certs/emqx.crt",
+          "cacertfile": {{ EMQX_TLS_CA_CERTS }},
+          "certfile": {{ EMQX_TLS_CA_CERTS }},
           "ciphers": [],
           "client_renegotiation": true,
           "depth": 10,
@@ -219,8 +219,8 @@
         "proxy_protocol": false,
         "proxy_protocol_timeout": "3s",
         "ssl_options": {
-          "cacertfile": "/etc/emqx/certs/ca.crt",
-          "certfile": "/etc/emqx/certs/emqx.crt",
+          "cacertfile": {{ EMQX_TLS_CA_CERTS }},
+          "certfile": {{ EMQX_TLS_CA_CERTS }},
           "ciphers": [],
           "client_renegotiation": true,
           "depth": 10,
