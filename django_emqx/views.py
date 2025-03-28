@@ -60,22 +60,23 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
         Returns:
             JsonResponse: A JSON response indicating the success or failure of the operation.
         """
-        data = json.loads(request.body)
-        title = data.get("title")
-        body = data.get("body")
-        user_ids = data.get("user_ids", None)  # optional targeting
+        payload = json.loads(request.body)
+        title = payload.get("title")
+        body = payload.get("body")
+        data = payload.get("data")
+        user_ids = payload.get("user_ids", None)
         
-        if not title and not body:
-            return Response({"error": "Title or body are required"}, status=status.HTTP_400_BAD_REQUEST)
+        if not title and not body and not data:
+            return Response({"error": "Title or body or data are required"}, status=status.HTTP_400_BAD_REQUEST)
 
-        message = Message.objects.create(title=title, body=body)
+        message = Message.objects.create(title=title, body=body, data=data)
 
         if user_ids:
             recipients = User.objects.filter(id__in=user_ids)
         else:
             recipients = User.objects.all()
 
-        self.send_all_notifications(message, recipients, self.mqtt_client, title, body)
+        self.send_all_notifications(message, recipients, self.mqtt_client)
         return JsonResponse({"message": "Notifications sent successfully"})
 
 

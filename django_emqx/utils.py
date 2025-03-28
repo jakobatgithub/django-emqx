@@ -73,7 +73,7 @@ def generate_mqtt_token(user):
     ]
     return str(token)
 
-def send_mqtt_message(mqtt_client, recipient, msg_id, title, body):
+def send_mqtt_message(mqtt_client, recipient, msg_id, title=None, body=None, data=None):
     """
     Publish a message via MQTT to a specific user's topic.
 
@@ -81,11 +81,16 @@ def send_mqtt_message(mqtt_client, recipient, msg_id, title, body):
         mqtt_client: The MQTT client instance used for publishing.
         recipient (User): The recipient user object.
         msg_id (str): The unique message ID.
-        title (str): The title of the message.
-        body (str): The body content of the message.
+        title (str): The title of the message (str or None).
+        body (str): The body content of the message (str or None).
+        data (dict or None): Optional additional data.
     """
-    """Publish message via MQTT."""
-    payload = json.dumps({"msg_id": msg_id, "title": title, "body": body})
+    payload = json.dumps({
+        "msg_id": msg_id,
+        "title": title if title is not None else "",
+        "body": body if body is not None else "",
+        "data": data if data is not None else ""
+    })
     user_topic = f"user/{recipient.id}/"
     mqtt_client.publish(user_topic, payload)
     

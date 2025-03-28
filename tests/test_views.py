@@ -62,7 +62,7 @@ class NotificationViewSetTests(TestCase):
         response = self.client.post(url, data, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_400_BAD_REQUEST)
-        self.assertEqual(response.json(), {"error": "Title or body are required"})
+        self.assertEqual(response.json(), {"error": "Title or body or data are required"})
 
     @patch("django_emqx.views.get_mqtt_client")
     def test_list_notifications(self, mock_get_client):

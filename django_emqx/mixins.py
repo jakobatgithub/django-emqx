@@ -20,7 +20,7 @@ class NotificationSenderMixin:
     Mixin to handle sending notifications to users via MQTT and Firebase.
     """
 
-    def send_all_notifications(self, message, recipients, mqtt_client, title, body):
+    def send_all_notifications(self, message, recipients, mqtt_client):
         """
         Send notifications to all recipients via MQTT and Firebase (if available).
 
@@ -35,12 +35,12 @@ class NotificationSenderMixin:
             Notification.objects.create(message=message, recipient=recipient)
 
             # Send a notification via MQTT
-            send_mqtt_message(mqtt_client, recipient, msg_id=message.id, title=title, body=body)
+            send_mqtt_message(mqtt_client, recipient, msg_id=message.id, title=message.title, body=message.body, data=message.data)
 
             # Send a notification to Firebase devices if Firebase is installed
             if firebase_installed:
                 devices = FCMDevice.objects.filter(user=recipient)
-                devices.send_message(FCMMessage(notification=FCMNotification(title=title, body=body)))
+                devices.send_message(FCMMessage(notification=FCMNotification(title=message.title, body=message.body)))
 
 
 class ClientEventMixin:

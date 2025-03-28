@@ -50,10 +50,10 @@ class TestUtils(unittest.TestCase):
     def test_send_mqtt_message(self, mock_json_dumps):
         mock_mqtt_client = MagicMock()
         mock_recipient = MagicMock(id=123)
-        mock_json_dumps.return_value = '{"msg_id": "1", "title": "Test", "body": "Message"}'
+        mock_json_dumps.return_value = '{"msg_id": "1", "title": "Test", "body": "Message", "data": "Data"}'
 
-        send_mqtt_message(mock_mqtt_client, mock_recipient, "1", "Test", "Message")
-        mock_mqtt_client.publish.assert_called_with("user/123/", '{"msg_id": "1", "title": "Test", "body": "Message"}')
+        send_mqtt_message(mock_mqtt_client, mock_recipient, "1", "Test", "Message", "Data")
+        mock_mqtt_client.publish.assert_called_with("user/123/", '{"msg_id": "1", "title": "Test", "body": "Message", "data": "Data"}')
 
     @patch("django_emqx.utils.messaging.send")
     def test_send_firebase_notification(self, mock_send):

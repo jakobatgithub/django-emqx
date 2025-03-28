@@ -29,8 +29,6 @@ class NotificationSenderMixinTests(TestCase):
                     message=self.message,
                     recipients=[self.user],
                     mqtt_client="mock_mqtt_client",
-                    title="Hello",
-                    body="World"
                 )
                 mock_devices.send_message.assert_called_once()
         else:
@@ -38,11 +36,9 @@ class NotificationSenderMixinTests(TestCase):
                 message=self.message,
                 recipients=[self.user],
                 mqtt_client="mock_mqtt_client",
-                title="Hello",
-                body="World"
             )
 
-        mock_send_mqtt.assert_called_once_with("mock_mqtt_client", self.user, msg_id=self.message.id, title="Hello", body="World")
+        mock_send_mqtt.assert_called_once_with("mock_mqtt_client", self.user, msg_id=self.message.id, title="Hello", body="World", data=None)
 
 
 class ClientEventMixinTests(TestCase):
