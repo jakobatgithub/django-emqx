@@ -75,7 +75,7 @@ def generate_mqtt_token(user):
     ]
     return str(token)
 
-def send_mqtt_message(recipient, message):
+def send_mqtt_message(recipient, message, qos=1):
     """
     Publish a message via MQTT to a specific user's topic.
 
@@ -99,7 +99,7 @@ def send_mqtt_message(recipient, message):
     })
     user_topic = f"user/{recipient.id}/"
     mqtt_client = get_mqtt_client()
-    mqtt_client.publish(user_topic, payload)
+    mqtt_client.publish(user_topic, payload, qos=qos)
     
     print(f"✅ MQTT notification sent: {payload}")
 
