@@ -45,12 +45,12 @@ class ClientEventMixinTests(TestCase):
         self.mixin = ClientEventMixin()
 
     def test_handle_client_connected_creates_device(self):
-        device_id = "device123"
+        client_id = "device123"
         ip = "192.168.0.1"
 
-        self.mixin.handle_client_connected(user_id=self.user.id, device_id=device_id, ip_address=ip)
+        self.mixin.handle_client_connected(user_id=self.user.id, client_id=client_id, ip_address=ip)
 
-        device = EMQXDevice.objects.get(client_id=device_id)
+        device = EMQXDevice.objects.get(client_id=client_id)
         self.assertEqual(device.user, self.user)
         self.assertTrue(device.active)
         self.assertEqual(device.last_status, "online")
@@ -65,7 +65,7 @@ class ClientEventMixinTests(TestCase):
             last_status="offline",
         )
 
-        self.mixin.handle_client_connected(user_id=self.user.id, device_id="existing_device", ip_address="1.2.3.4")
+        self.mixin.handle_client_connected(user_id=self.user.id, client_id="existing_device", ip_address="1.2.3.4")
 
         device.refresh_from_db()
         self.assertTrue(device.active)
@@ -80,7 +80,7 @@ class ClientEventMixinTests(TestCase):
             last_status="online",
         )
 
-        self.mixin.handle_client_disconnected(user_id=self.user.id, device_id="device456")
+        self.mixin.handle_client_disconnected(user_id=self.user.id, client_id="device456")
 
         device.refresh_from_db()
         self.assertFalse(device.active)
@@ -88,12 +88,12 @@ class ClientEventMixinTests(TestCase):
 
     def test_handle_client_connected_ignores_missing_user(self):
         # No exception should be raised
-        self.mixin.handle_client_connected(user_id=9999, device_id="no-user-device")
+        self.mixin.handle_client_connected(user_id=9999, client_id="no-user-device")
 
         self.assertFalse(EMQXDevice.objects.filter(client_id="no-user-device").exists())
 
     def test_handle_client_disconnected_ignores_missing_user(self):
         # No exception should be raised
-        self.mixin.handle_client_disconnected(user_id=9999, device_id="no-user-device")
+        self.mixin.handle_client_disconnected(user_id=9999, client_id="no-user-device")
 
         self.assertEqual(EMQXDevice.objects.count(), 0)

@@ -48,13 +48,13 @@ class ClientEventMixin:
     Mixin to handle client connection and disconnection events.
     """
 
-    def handle_client_connected(self, user_id, device_id, ip_address=None):
+    def handle_client_connected(self, user_id, client_id, ip_address=None):
         """
         Handle the event when a client connects.
 
         Args:
             user_id (int): The ID of the user associated with the client.
-            device_id (str): The unique identifier of the device.
+            client_id (str): The unique identifier of the client.
             ip_address (str, optional): The IP address of the client. Defaults to None.
         """
         user = get_user_model().objects.filter(id=int(user_id)).first()
@@ -62,7 +62,7 @@ class ClientEventMixin:
             return
 
         device, created = EMQXDevice.objects.update_or_create(
-            client_id=device_id,
+            client_id=client_id,
             defaults={
                 "user": user,
                 "active": True,
@@ -73,19 +73,19 @@ class ClientEventMixin:
         )
         return created
 
-    def handle_client_disconnected(self, user_id, device_id):
+    def handle_client_disconnected(self, user_id, client_id):
         """
         Handle the event when a client disconnects.
 
         Args:
             user_id (int): The ID of the user associated with the client.
-            device_id (str): The unique identifier of the device.
+            client_id (str): The unique identifier of the device.
         """
         user = get_user_model().objects.filter(id=int(user_id)).first()
         if not user:
             return
 
-        updated = EMQXDevice.objects.filter(client_id=device_id, user=user).update(
+        updated = EMQXDevice.objects.filter(client_id=client_id, user=user).update(
             active=False,
             last_status="offline",
         )

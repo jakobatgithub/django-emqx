@@ -192,8 +192,8 @@ class EMQXDeviceViewSetTests(TestCase):
 
     @patch("django_emqx.views.EMQXDeviceViewSet.handle_client_connected")
     def test_signal_emqx_device_connected(self, mock_handle_client_connected):
-        mock_handle_client_connected.side_effect = lambda user_id, device_id, ip_address: emqx_device_connected.send(
-            sender=EMQXDevice, user_id=user_id, device_id=device_id, ip_address=ip_address
+        mock_handle_client_connected.side_effect = lambda user_id, client_id, ip_address: emqx_device_connected.send(
+            sender=EMQXDevice, user_id=user_id, client_id=client_id, ip_address=ip_address
         )
         url = reverse("devices-list")
         data = {
@@ -210,7 +210,7 @@ class EMQXDeviceViewSetTests(TestCase):
         self.assertEqual(response.status_code, status.HTTP_200_OK)
         self.assertEqual(response.json(), {"status": "success"})
         self.assertEqual(handler.signal_args[1]["user_id"], str(self.user.id))  # Verify signal arguments
-        self.assertEqual(handler.signal_args[1]["device_id"], "test_client_id")
+        self.assertEqual(handler.signal_args[1]["client_id"], "test_client_id")
 
     @patch("django_emqx.views.EMQXDeviceViewSet.handle_client_connected", return_value=True)
     def test_signal_new_emqx_device_connected(self, mock_handle_client_connected):
