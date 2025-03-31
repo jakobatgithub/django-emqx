@@ -89,7 +89,7 @@ class EMQXTokenViewSet(ViewSet):
             request: The HTTP request object.
 
         Returns:
-            Response: A JSON response containing the MQTT token and user ID.
+            Response: A JSON response containing the MQTT access token and refresh token and user ID.
         """
         user = request.user
         access_token = generate_mqtt_access_token(user)
