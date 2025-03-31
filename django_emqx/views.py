@@ -96,8 +96,8 @@ class EMQXTokenViewSet(ViewSet):
         refresh_token = generate_mqtt_refresh_token(user)
 
         return Response({
-            "mqtt_token": access_token,
-            "refresh_token": refresh_token,
+            "mqtt_access_token": access_token,
+            "mqtt_refresh_token": refresh_token,
             "user_id": str(user.id),
         })
 
@@ -122,7 +122,7 @@ class EMQXTokenViewSet(ViewSet):
             user = User.objects.get(id=user_id)
 
             access_token = generate_mqtt_access_token(user)
-            return Response({"mqtt_token": access_token})
+            return Response({"mqtt_access_token": access_token})
 
         except (TokenError, User.DoesNotExist):
             return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_401_UNAUTHORIZED)

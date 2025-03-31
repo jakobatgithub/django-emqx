@@ -81,8 +81,8 @@ class EMQXTokenViewSetTests(TestCase):
         response = self.client.post(url, format="json")
 
         self.assertEqual(response.status_code, status.HTTP_200_OK)
-        self.assertIn("mqtt_token", response.json())
-        self.assertIn("refresh_token", response.json())
+        self.assertIn("mqtt_access_token", response.json())
+        self.assertIn("mqtt_refresh_token", response.json())
         self.assertIn("user_id", response.json())
 
     def test_refresh_token(self):
@@ -91,7 +91,7 @@ class EMQXTokenViewSetTests(TestCase):
         response = self.client.post(url, format="json")
         self.assertEqual(response.status_code, status.HTTP_200_OK)
 
-        refresh_token = response.json().get("refresh_token")
+        refresh_token = response.json().get("mqtt_refresh_token")
         self.assertIsNotNone(refresh_token)
 
         # Then: refresh access token using it
@@ -99,7 +99,7 @@ class EMQXTokenViewSetTests(TestCase):
         refresh_response = self.client.post(refresh_url, {"refresh": refresh_token}, format="json")
 
         self.assertEqual(refresh_response.status_code, status.HTTP_200_OK)
-        self.assertIn("mqtt_token", refresh_response.json())
+        self.assertIn("mqtt_access_token", refresh_response.json())
 
 class EMQXDeviceViewSetTests(TestCase):
     def setUp(self):
