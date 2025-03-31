@@ -6,6 +6,8 @@ from rest_framework import status
 from rest_framework.viewsets import ViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated, AllowAny
+from rest_framework.decorators import action
+from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
 from django.http import JsonResponse
 from django.contrib.auth import get_user_model
@@ -14,7 +16,7 @@ from .conf import emqx_settings
 from .models import EMQXDevice, Message, Notification
 from .serializers import EMQXDeviceSerializer, NotificationSerializer
 from .mixins import NotificationSenderMixin, ClientEventMixin
-from .utils import generate_mqtt_token
+from .utils import generate_mqtt_access_token, generate_mqtt_refresh_token
 from .signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
 
 
@@ -90,10 +92,40 @@ class EMQXTokenViewSet(ViewSet):
             Response: A JSON response containing the MQTT token and user ID.
         """
         user = request.user
-        token = generate_mqtt_token(user)
+        access_token = generate_mqtt_access_token(user)
+        refresh_token = generate_mqtt_refresh_token(user)
 
-        return Response({"mqtt_token": token, "user_id": str(user.id)})
+        return Response({
+            "mqtt_token": access_token,
+            "refresh_token": refresh_token,
+            "user_id": str(user.id),
+        })
 
+    @action(detail=False, methods=["post"])
+    def refresh(self, request):
+        """
+        Use a refresh token to get a new access token.
+
+        Args:
+            request: The HTTP request object.
+
+        Returns:
+            Response: A JSON response containing the new MQTTm access token.
+        """
+        refresh_token = request.data.get("refresh")
+        if not refresh_token:
+            return Response({"error": "Missing refresh token."}, status=status.HTTP_400_BAD_REQUEST)
+
+        try:
+            refresh = RefreshToken(refresh_token)
+            user_id = refresh["user_id"]
+            user = User.objects.get(id=user_id)
+
+            access_token = generate_mqtt_access_token(user)
+            return Response({"mqtt_token": access_token})
+
+        except (TokenError, User.DoesNotExist):
+            return Response({"error": "Invalid or expired refresh token."}, status=status.HTTP_401_UNAUTHORIZED)
 
 class EMQXDeviceViewSet(ViewSet, ClientEventMixin):
     """
