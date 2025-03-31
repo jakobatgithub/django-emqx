@@ -3,7 +3,7 @@
 import json
 import secrets
 
-from rest_framework_simplejwt.tokens import AccessToken
+from rest_framework_simplejwt.tokens import AccessToken, RefreshToken
 
 try:
     from firebase_admin import messaging
@@ -42,7 +42,7 @@ def generate_backend_mqtt_token():
     ]
     return str(token)
 
-def generate_mqtt_token(user):
+def generate_mqtt_access_token(user):
     """
     Generate a JWT token for a specific user for MQTT communication.
 
@@ -74,6 +74,13 @@ def generate_mqtt_token(user):
         }
     ]
     return str(token)
+
+def generate_mqtt_refresh_token(user):
+    """
+    Generate a refresh token for a user.
+    """
+    refresh = RefreshToken.for_user(user)
+    return str(refresh)
 
 def send_mqtt_message(recipient, message, qos=1):
     """

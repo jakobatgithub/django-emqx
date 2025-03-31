@@ -2,7 +2,7 @@ import unittest
 from unittest.mock import patch, MagicMock
 from django_emqx.utils import (
     generate_backend_mqtt_token,
-    generate_mqtt_token,
+    generate_mqtt_access_token,
     send_mqtt_message,
     send_firebase_notification,
     send_firebase_data_message,
@@ -41,7 +41,7 @@ class TestUtils(unittest.TestCase):
 
         mock_token.__setitem__.side_effect = setitem_side_effect
 
-        generate_mqtt_token(mock_user)
+        generate_mqtt_access_token(mock_user)
         self.assertTrue(mock_for_user.called)
         self.assertEqual(mock_token.__dict__["username"], "123")
         self.assertIn("acl", mock_token.__dict__)
