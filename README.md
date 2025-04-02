@@ -10,7 +10,7 @@ This project incorporates several security and efficiency measures to ensure sea
     Each frontend user is restricted to a single dedicated MQTT topic for subscriptions, ensuring isolation between users. The backend, however, has the necessary permissions to publish messages to all topics, enabling efficient and controlled message distribution.
 
 - **JWT-based Authentication & Authorization:**
-    JSON Web Tokens (JWT) are used for authenticating MQTT clients at EMQX and to enforce access and control lists (ACLs). This ensures that each client has restricted access based on predefined permissions, preventing unauthorized subscriptions or publications. For JWT we use `rest_framework_simplejwt`.
+    JSON Web Tokens (JWT) are used for authenticating MQTT clients at EMQX and to enforce access and control lists (ACLs). This ensures that each client has restricted access based on predefined permissions, preventing unauthorized subscriptions or publications. For JWT we use `rest_framework_simplejwt`. Settings for JWT authentication are controlled by the settings for JWT (i.e., `SIMPLE_JWT` in `settings.py`).
 
 - **Secure MQTT Communication with TLS:**
     To protect data transmission, the connection between the frontend and the EMQX broker is secured using Transport Layer Security (TLS). This encryption prevents eavesdropping and tampering, ensuring a confidential and secure communication channel.
@@ -43,8 +43,8 @@ pip install django-emqx[fcm]
     - **utils.py**: Utility functions for generating keys and sending notifications.
     - **views.py**: Django views for handling HTTP requests.
     - **mqtt.py**: Provides `MQTTClient` which connects the backend to the EMQX server.
-    - **tests.py**: Contains unit tests for views and models.
-- **README.md**: Project documentation and setup instructions.
+  - **tests/**: Contains unit tests for views and models.
+  - **README.md**: Project documentation and setup instructions.
 
 ## License
 
