@@ -41,7 +41,7 @@ class MQTTClient:
         for attempt in range(emqx_settings.EMQX_MAX_RETRIES):
             try:
                 print(f"🔄 Attempt {attempt + 1}: Connecting to MQTT broker...")
-                self.client.connect_async(broker, port, keepalive)
+                self.client.connect(broker, port, keepalive)
                 self.client.loop_start()
                 print("✅ Successfully connected to MQTT broker!")
                 return
@@ -87,7 +87,13 @@ class MQTTClient:
             payload (str): The message payload.
             qos (int, optional): The Quality of Service level. Defaults to 1.
         """
-        self.client.publish(topic, payload, qos)
+        info = self.client.publish(topic, payload, qos)
+        info.wait_for_publish()  # Blocks until publish is complete
+
+        if info.rc == mqtt.MQTT_ERR_SUCCESS:
+            print("✅ Message published successfully")
+        else:
+            print(f"❌ Failed to publish message, return code: {info.rc}")
 
     def disconnect(self):
         """
