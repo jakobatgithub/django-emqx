@@ -26,6 +26,7 @@ dependencies = [
     "djangorestframework>=3.15.1,<4.0",
     "djangorestframework_simplejwt>=5.5.0",
     "paho_mqtt>=2.1.0",
+    "jinja2",
 ]
 
 [project.urls]
