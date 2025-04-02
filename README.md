@@ -37,12 +37,16 @@ pip install django-emqx[fcm]
 ## Project Structure
 
   - **django_emqx/**: Django app for handling notifications.
+    -- **management/**: Provides `generate_emqx_config.py` for generating an `emqx.conf` file from settings.
     - **migrations/**: Database migrations for the notifications app.
-    - **models/**: Contains the data models for `EMQXDevice`, `Message`, and `UserNotification`. If Wagtail is installed, the models use Wagtail-specific features for enhanced functionality.
-    - **serializer.py**: Serilizers for the `EMQXDevice` and `UserNotification` models.
-    - **utils.py**: Utility functions for generating keys and sending notifications.
-    - **views.py**: Django views for handling HTTP requests.
+    - **templates/**: Provides a Jinja template to generate an `emqx.conf` file from settings with the management command `python manage.py generate_emqx_config`.
+    - **conf.py**: Defines the default settings.
+    - **models.py**: Contains the data models for `EMQXDevice`, `Message`, and `UserNotification`.
+    - **mixins.py**: Provides mixins for the views.
     - **mqtt.py**: Provides `MQTTClient` which connects the backend to the EMQX server.
+    - **serializers.py**: Serilizers for the `EMQXDevice` and `UserNotification` models.
+    - **utils.py**: Utility functions for generating JWT tokens, sending notifications, and generating keys.
+    - **views.py**: Django views for handling HTTP requests.
   - **tests/**: Contains unit tests for views and models.
   - **README.md**: Project documentation and setup instructions.
 
