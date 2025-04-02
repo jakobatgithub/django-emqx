@@ -1,6 +1,6 @@
 # Django EMQX
 
-A Django-based project for integrating MQTT communication with EMQX, featuring secure topic-based access control, JWT authentication, TLS encryption, and optional Firebase Cloud Messaging support.
+A Django app for integrating MQTT communication with EMQX, featuring secure topic-based access control, JWT authentication, TLS encryption, and optional Firebase Cloud Messaging support. See [notification_test](https://github.com/jakobatgithub/notification_test) for a Demo how to use this Django app.
 
 ## Features
 
@@ -40,11 +40,14 @@ pip install django-emqx[fcm]
     -- **management/**: Provides `generate_emqx_config.py` for generating an `emqx.conf` file from settings.
     - **migrations/**: Database migrations for the notifications app.
     - **templates/**: Provides a Jinja template to generate an `emqx.conf` file from settings with the management command `python manage.py generate_emqx_config`.
+    - **__init__.py**: Provides a global (app-wide) instance of `MQTTClient`.
     - **conf.py**: Defines the default settings.
     - **models.py**: Contains the data models for `EMQXDevice`, `Message`, and `UserNotification`.
     - **mixins.py**: Provides mixins for the views.
     - **mqtt.py**: Provides `MQTTClient` which connects the backend to the EMQX server.
     - **serializers.py**: Serilizers for the `EMQXDevice` and `UserNotification` models.
+    - **signals.py**: Defines signals which are sent when an EMQX device connects or disconnects.
+    - **urls.py**: URL routing for the Django app.
     - **utils.py**: Utility functions for generating JWT tokens, sending notifications, and generating keys.
     - **views.py**: Django views for handling HTTP requests.
   - **tests/**: Contains unit tests for views and models.
