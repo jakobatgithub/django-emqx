@@ -17,7 +17,7 @@ class TestMQTTClient(unittest.TestCase):
         mock_generate_token.assert_called_once()
         mock_mqtt_client.assert_called_once()
         mock_client_instance.username_pw_set.assert_called_with(username='backend', password="mock_token")
-        mock_client_instance.connect_async.assert_called_with("test_broker", 1883, 60)
+        mock_client_instance.connect.assert_called_with("test_broker", 1883, 60)
         mock_client_instance.loop_start.assert_called_once()
 
     @patch('django_emqx.mqtt.mqtt.Client')
