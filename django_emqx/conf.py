@@ -4,7 +4,7 @@ from django.conf import settings
 
 
 DEFAULTS = {
-    'EMQX_BROKER': "emqx_broker",
+    'EMQX_BROKER': "emqx-broker",
     'EMQX_PORT': 8883,
     'EMQX_WEBHOOK_SECRET': settings.SECRET_KEY,
     'EMQX_NODE_COOKIE': settings.SECRET_KEY,
