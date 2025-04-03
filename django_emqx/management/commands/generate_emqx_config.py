@@ -20,6 +20,26 @@ def load_template_from_package():
 
 
 class Command(BaseCommand):
+    """
+    Management command to generate an EMQX configuration file from Django settings.
+
+    This command uses a Jinja2 template embedded in the package to render a complete
+    `emqx.conf` file based on settings from the Django project and custom arguments.
+
+    Usage:
+        python manage.py generate_emqx_config [--output <path>] [--base-url <url>] [--enable-tls --keyfile <path> --certfile <path>]
+
+    Arguments:
+        --output      Path to save the generated EMQX config file. Defaults to <BASE_DIR>/config/generated/emqx.conf.
+        --base-url    Base URL to use for webhook endpoints. Defaults to http://localhost:8000.
+        --enable-tls  Enable TLS in the config. Requires --keyfile and --certfile.
+        --keyfile     Path to the TLS private key file.
+        --certfile    Path to the TLS certificate file.
+
+    The rendered config includes EMQX-specific secrets and webhook settings, including
+    a device webhook URL resolved from Django's URL routing.
+    """
+    
     help = 'Generate EMQX config from Django settings'
 
     def add_arguments(self, parser):
@@ -32,7 +52,7 @@ class Command(BaseCommand):
         parser.add_argument(
             '--base-url',
             type=str,
-            help='Base URL to use for webhook endpoints. Defaults to http://localhost:8000.',
+            help='Base URL to use for webhook endpoints, i.e., your Django backend. Defaults to http://localhost:8000.',
             default='http://localhost:8000/',
         )
         parser.add_argument(
