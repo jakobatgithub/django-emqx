@@ -9,23 +9,21 @@ from rest_framework.permissions import IsAuthenticated, AllowAny
 from rest_framework.decorators import action
 from rest_framework_simplejwt.tokens import RefreshToken, TokenError
 
-from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 
 from .conf import emqx_settings
-from .models import EMQXDevice, Message, Notification
+from .models import EMQXDevice, Notification
 from .serializers import EMQXDeviceSerializer, NotificationSerializer
-from .mixins import NotificationSenderMixin, ClientEventMixin
+from .mixins import ClientEventMixin
 from .utils import generate_mqtt_access_token, generate_mqtt_refresh_token
 from .signals import emqx_device_connected, new_emqx_device_connected, emqx_device_disconnected
-
 
 User = get_user_model()
 
 
-class NotificationViewSet(ViewSet, NotificationSenderMixin):
+class NotificationViewSet(ViewSet):
     """
-    A ViewSet for managing user notifications. Allows authenticated users to list and create notifications.
+    A ViewSet for managing user notifications. Allows authenticated users to list their notifications.
     """
 
     permission_classes = [IsAuthenticated]
@@ -43,36 +41,6 @@ class NotificationViewSet(ViewSet, NotificationSenderMixin):
         notifications = Notification.objects.filter(recipient=request.user).select_related("message")
         serializer = NotificationSerializer(notifications, many=True)
         return Response(serializer.data)
-
-    def create(self, request):
-        """
-        Create and send notifications to specified users or all users.
-
-        Args:
-            request: The HTTP request object containing notification data.
-
-        Returns:
-            JsonResponse: A JSON response indicating the success or failure of the operation.
-        """
-        payload = json.loads(request.body)
-        title = payload.get("title")
-        body = payload.get("body")
-        data = payload.get("data")
-        user_ids = payload.get("user_ids", None)
-        
-        if not title and not body and not data:
-            return Response({"error": "Title or body or data are required"}, status=status.HTTP_400_BAD_REQUEST)
-
-        message = Message.objects.create(title=title, body=body, data=data, created_by=request.user)
-
-        if user_ids:
-            recipients = User.objects.filter(id__in=user_ids)
-        else:
-            recipients = User.objects.all()
-
-        self.send_all_notifications(message, recipients)
-        return JsonResponse({"message": "Notifications sent successfully"})
-
 
 class EMQXTokenViewSet(ViewSet):
     """
