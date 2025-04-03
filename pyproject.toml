@@ -15,7 +15,7 @@ authors = [
 maintainers = [
     { name = "Jakob", email = "jakob@physik.tu-berlin.de" },
 ]
-keywords = ["django", "mqtt", "emq", "notifications"]
+keywords = ["django", "mqtt", "emqx", "notifications"]
 classifiers = [
     "Framework :: Django",
     "Programming Language :: Python :: 3",
