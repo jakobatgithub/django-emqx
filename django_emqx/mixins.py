@@ -25,7 +25,7 @@ class NotificationSenderMixin:
         Send notifications to all recipients via MQTT and Firebase (if available).
 
         Args:
-            message (UserNotification): The notification message to send.
+            message (Notification): The notification message to send.
             recipients (QuerySet): A queryset of recipient users.
             mqtt_client (object): The MQTT client instance.
             title (str): The title of the notification.

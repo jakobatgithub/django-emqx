@@ -123,7 +123,7 @@ class MessageModelTests(TestCase):
         self.assertEqual(self.message.created_by, self.user)
         self.assertIsNotNone(self.message.created_at)
 
-class UserNotificationModelTests(TestCase):
+class NotificationModelTests(TestCase):
     def setUp(self):
         self.user = User.objects.create_user(username="testuser", password="testpassword")
         self.message = Message.objects.create(
