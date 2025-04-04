@@ -8,15 +8,17 @@
 ## 📦 Installation
 
 Install the core package:
-
 ```bash
-pip install django-emqx
+pip install "django-emqx @ git+ssh://git@github.com/jakobatgithub/django-emqx.git@main"
+```
+Install with Firebase support:
+```bash
+pip install "django-emqx[fcm] @ git+ssh://git@github.com/jakobatgithub/django-emqx.git@main"
 ```
 
-Install with Firebase support:
-
+Full install with packages for development and testing:
 ```bash
-pip install django-emqx[fcm]
+pip install "django-emqx[fcm,test,dev] @ git+ssh://git@github.com/jakobatgithub/django-emqx.git@main"
 ```
 
 
@@ -53,8 +55,8 @@ django_emqx/
 ├── management/                 # Admin commands (e.g., generate_emqx_config)
 │   └── generate_emqx_config.py # Management comamnd for generating an emqx.conf file from a template.
 ├── migrations/                 # Database migrations
-├── templates/                  # Jinja2 template for EMQX config generation
-│   └── emqx.conf.j2
+├── templates/                  
+│   └── emqx.conf.j2            # Jinja2 template for EMQX config generation
 ├── __init__.py                 # Initializes global MQTTClient instance
 ├── admin.py                    # Registers the models at the admin interface
 ├── conf.py                     # Default configuration values
@@ -64,7 +66,7 @@ django_emqx/
 ├── serializers.py              # Serializers for EMQXDevice and Notification models
 ├── signals.py                  # Device connection/disconnection signals
 ├── urls.py                     # App URL routes
-├── utils.py                    # Helpers for JWT generation, FCM, key mgmt
+├── utils.py                    # Helpers for JWT generation, FCM, secret key generation
 ├── views.py                    # API views for registration and messaging
 tests/                          # Unit tests for views and models
 README.md                       # Project overview and usage guide
@@ -72,9 +74,9 @@ README.md                       # Project overview and usage guide
 
 ## Testing
 
-For testing, install with testing packages and run tests with `pytest`:
+For testing, install with testing packages and run tests with `pytest` and `coverage` support:
 ```bash
-pip install django-emqx[test]
+pip install "django-emqx[test] @ git+ssh://git@github.com/jakobatgithub/django-emqx.git@main"
 pytest --cov=django_emqx
 ```
 
