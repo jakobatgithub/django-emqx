@@ -72,7 +72,7 @@ tests/                          # Unit tests for views and models
 README.md                       # Project overview and usage guide
 ```
 
-## Testing
+## 🧪 Testing
 
 For testing, install with testing packages and run tests with `pytest` and `coverage` support:
 ```bash
